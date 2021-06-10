@@ -6,6 +6,6 @@ After I was happy with the result I ran :
 
 npm run build
 
-the build/ folder was created and then I cloned it to this repository 
+the build/ folder was created and then I pushed it to this repository 
 
 to clone from your computer to GitHub repo : https://superuser.com/questions/1412078/bring-a-local-folder-to-remote-git-repo
