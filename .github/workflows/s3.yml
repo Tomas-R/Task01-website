@@ -14,19 +14,19 @@ jobs:
 
     steps:
      - uses: actions/checkout@v2
-     - name: Use Node.js ${{ matrix.node-version }}
-       uses: actions/setup-node@v1
-       with:
-         node-version: ${{ matrix.node-version }}
-     - name: Yarn Install
-       run: |
-        yarn install
-     - name: Production Build
-       run: |
-        yarn build
-     - name: Unit Tests
-       run: |
-        yarn test
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v1
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#     - name: Yarn Install
+#       run: |
+#        yarn install
+#     - name: Production Build
+#       run: |
+#        yarn build
+#     - name: Unit Tests
+#       run: |
+#        yarn test
 
      - name: Deploy to S3
        uses: jakejarvis/s3-sync-action@master
