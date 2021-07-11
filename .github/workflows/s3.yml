@@ -1,0 +1,53 @@
+name: deploying to s3
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # specify the machine
+
+    strategy:
+      matrix:
+        node-version: [14.x] # specify node version 
+
+    steps:
+     - uses: actions/checkout@v2
+     - name: Use Node.js ${{ matrix.node-version }}
+       uses: actions/setup-node@v1
+       with:
+         node-version: ${{ matrix.node-version }}
+     - name: Yarn Install
+       run: |
+        yarn install
+     - name: Production Build
+       run: |
+        yarn build
+     - name: Unit Tests
+       run: |
+        yarn test
+
+     - name: Deploy to S3
+       uses: jakejarvis/s3-sync-action@master
+       with:
+         args: --acl public-read --delete
+       env:
+         AWS_S3_BUCKET: ${{ secrets.AWS_PRODUCTION_BUCKET_NAME }}
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         AWS_REGION: ${{ secrets.AWS_REGION }}
+         SOURCE_DIR: "build"
+
+# We are now able to install, build and test our app before deploying to S3.
+# We are using Yarn as it is the default package manager for create-react-app; 
+# However, this works exactly the same with NPM and others.
+# Running these Yarn scripts will ensure your app builds correctly and passes all unit tests before being pushed to the S3 bucket,
+
+# Finally, we need to add in the deployment step, which is can be done by using a Github Action called s3-sync-action 
+# The Action takes your compiled application and sends it to a designated S3 bucket using pre-defined environment variables.
+# Using the uses key once again, this is all we need to do to import the Action,
+# then using the with key we utilise the relevant arguments that are required when uploading to S3:
+
+# --acl public-read: assuming your S3 bucket is configured to be publicly readable, this will ensure that the uploaded files are too.
+# --delete: this deletes any files within the S3 bucket that do not exist in the uploaded files.
